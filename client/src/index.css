@@ -76,6 +76,12 @@
   --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.623 0.214 259.815);
+  --trusted: oklch(0.55 0.15 142);
+  --trusted-light: oklch(0.92 0.04 142);
+  --scammer: oklch(0.62 0.22 27);
+  --scammer-light: oklch(0.95 0.08 27);
+  --neutral: oklch(0.65 0.05 0);
+  --neutral-light: oklch(0.95 0.01 0);
 }
 
 .dark {
@@ -173,5 +179,40 @@
       padding-right: 2rem;
       max-width: 1280px; /* Standard content width */
     }
+  }
+
+  /* Status card styles */
+  .status-card-trusted {
+    @apply bg-[color:var(--trusted-light)] border-2 border-[color:var(--trusted)] text-[color:var(--trusted)];
+  }
+
+  .status-card-scammer {
+    @apply bg-[color:var(--scammer-light)] border-2 border-[color:var(--scammer)] text-[color:var(--scammer)];
+  }
+
+  .status-card-not-found {
+    @apply bg-[color:var(--neutral-light)] border-2 border-[color:var(--neutral)] text-[color:var(--neutral)];
+  }
+
+  /* Badge styles */
+  .badge-trusted {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[color:var(--trusted)] text-white text-sm font-medium;
+  }
+
+  .badge-scammer {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[color:var(--scammer)] text-white text-sm font-medium;
+  }
+
+  .badge-not-found {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[color:var(--neutral)] text-white text-sm font-medium;
+  }
+
+  /* Smooth transitions */
+  .card-hover {
+    @apply transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 cursor-pointer;
+  }
+
+  .btn-smooth {
+    @apply transition-all duration-300 ease-in-out active:scale-95;
   }
 }

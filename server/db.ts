@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, ilike, or, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, profiles, InsertProfile, Profile, joinRequests, InsertJoinRequest, JoinRequest } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,165 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Profile queries
+export async function searchProfiles(query: string): Promise<Profile[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot search profiles: database not available");
+    return [];
+  }
+
+  try {
+    const results = await db
+      .select()
+      .from(profiles)
+      .where(
+        or(
+          ilike(profiles.name, `%${query}%`),
+          ilike(profiles.profileLink, `%${query}%`)
+        )
+      )
+      .limit(10);
+
+    return results;
+  } catch (error) {
+    console.error("[Database] Failed to search profiles:", error);
+    return [];
+  }
+}
+
+export async function getProfileById(id: number): Promise<Profile | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get profile: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, id))
+      .limit(1);
+
+    return result.length > 0 ? result[0] : undefined;
+  } catch (error) {
+    console.error("[Database] Failed to get profile:", error);
+    return undefined;
+  }
+}
+
+export async function getAllProfiles(): Promise<Profile[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get profiles: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(profiles).orderBy(profiles.createdAt);
+  } catch (error) {
+    console.error("[Database] Failed to get profiles:", error);
+    return [];
+  }
+}
+
+export async function createProfile(data: InsertProfile): Promise<Profile | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create profile: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(profiles).values(data);
+    const result = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.profileLink, data.profileLink))
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create profile:", error);
+    return null;
+  }
+}
+
+export async function updateProfile(id: number, data: Partial<InsertProfile>): Promise<Profile | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update profile: database not available");
+    return null;
+  }
+
+  try {
+    await db.update(profiles).set(data).where(eq(profiles.id, id));
+    const result = await getProfileById(id);
+    return result || null;
+  } catch (error) {
+    console.error("[Database] Failed to update profile:", error);
+    return null;
+  }
+}
+
+export async function deleteProfile(id: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete profile: database not available");
+    return false;
+  }
+
+  try {
+    await db.delete(profiles).where(eq(profiles.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete profile:", error);
+    return false;
+  }
+}
+
+// Join Request queries
+export async function createJoinRequest(data: InsertJoinRequest): Promise<JoinRequest | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create join request: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(joinRequests).values(data);
+    const result = await db
+      .select()
+      .from(joinRequests)
+      .orderBy(joinRequests.createdAt)
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create join request:", error);
+    return null;
+  }
+}
+
+export async function getJoinRequests(status?: string): Promise<JoinRequest[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get join requests: database not available");
+    return [];
+  }
+
+  try {
+    if (status) {
+      return await db
+        .select()
+        .from(joinRequests)
+        .where(eq(joinRequests.status, status as any))
+        .orderBy(joinRequests.createdAt);
+    }
+    return await db.select().from(joinRequests).orderBy(joinRequests.createdAt);
+  } catch (error) {
+    console.error("[Database] Failed to get join requests:", error);
+    return [];
+  }
+}
