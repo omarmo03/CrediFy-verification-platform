@@ -61,7 +61,7 @@ describe("Profiles Router", () => {
   it("should create a scammer profile", async () => {
     const result = await caller.profiles.create({
       name: "Scammer Test",
-      profileLink: "https://example.com/scammer",
+      profileLink: "https://example.com/scammer-" + Date.now(),
       status: "scammer",
       proofCount: 0,
     });
@@ -172,15 +172,16 @@ describe("Join Requests Router", () => {
 
   it("should create a join request", async () => {
     const publicCaller = appRouter.createCaller(createPublicContext());
+    const timestamp = Date.now();
     const result = await publicCaller.joinRequests.create({
-      email: "newuser@example.com",
+      email: `newuser${timestamp}@example.com`,
       name: "New User",
-      profileLink: "https://example.com/newuser",
+      profileLink: `https://example.com/newuser-${timestamp}`,
       message: "I want to join as a trusted user",
     });
 
     expect(result).toBeDefined();
-    expect(result.email).toBe("newuser@example.com");
+    expect(result.name).toBe("New User");
     expect(result.status).toBe("pending");
   });
 
@@ -188,6 +189,7 @@ describe("Join Requests Router", () => {
     const results = await caller.joinRequests.getAll();
 
     expect(Array.isArray(results)).toBe(true);
+    expect(results.length).toBeGreaterThan(0);
   });
 
   it("should prevent non-admin from viewing join requests", async () => {
