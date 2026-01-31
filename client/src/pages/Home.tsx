@@ -7,6 +7,7 @@ import { SearchResultCard } from "@/components/SearchResultCard";
 import { TermsModal } from "@/components/TermsModal";
 import { ApplyModal } from "@/components/ApplyModal";
 import { toast } from "sonner";
+import { Link } from "wouter";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,46 +44,54 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col">
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
               <span className="text-white font-bold text-lg">RPS</span>
             </div>
             <h1 className="text-xl font-bold">منصة التحقق</h1>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowTermsModal(true)}
-            className="gap-2"
-          >
-            <Info className="w-4 h-4" />
-            الشروط
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowTermsModal(true)}
+              className="gap-2"
+            >
+              <Info className="w-4 h-4" />
+              الشروط
+            </Button>
+            <Link href="/admin">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <FileText className="w-4 h-4" />
+                لوحة التحكم
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container py-12 md:py-20">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         {/* Hero Section */}
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+        <div className="max-w-4xl mx-auto text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
             تحقق من موثوقية الأشخاص
           </h2>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             منصة آمنة وموثوقة للتحقق من حالة الأشخاص والحسابات. ابحث بالاسم أو رابط الحساب للحصول على معلومات فورية
           </p>
         </div>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-12">
+        <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-16">
           <div className="relative">
             <Input
               type="text"
               placeholder="ابحث بالاسم أو رابط الحساب..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-6 text-lg rounded-xl border-2 border-border hover:border-blue-300 focus:border-blue-500 transition-colors"
+              className="pl-12 py-6 text-lg rounded-xl border-2 border-border hover:border-blue-300 focus:border-blue-500 transition-colors w-full"
             />
             <button
               type="submit"
@@ -95,46 +104,48 @@ export default function Home() {
 
         {/* Search Results */}
         {hasSearched && (
-          <SearchResultCard
-            profile={selectedProfile}
-            isLoading={searchProfiles.isLoading}
-            error={
-              !searchProfiles.isLoading && !selectedProfile
-                ? "غير معروف"
-                : undefined
-            }
-          />
+          <div className="max-w-3xl mx-auto mb-16">
+            <SearchResultCard
+              profile={selectedProfile}
+              isLoading={searchProfiles.isLoading}
+              error={
+                !searchProfiles.isLoading && !selectedProfile
+                  ? "غير معروف"
+                  : undefined
+              }
+            />
+          </div>
         )}
 
         {/* Info Cards */}
         {!hasSearched && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-16">
-            <div className="p-6 rounded-xl bg-card border border-border hover:border-blue-300 transition-colors">
-              <div className="w-12 h-12 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-4">
-                <span className="text-xl">✓</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-20">
+            <div className="p-8 rounded-xl bg-card border border-border hover:border-blue-300 transition-colors">
+              <div className="w-16 h-16 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-6">
+                <span className="text-3xl">✓</span>
               </div>
-              <h3 className="font-semibold mb-2">موثوق</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-xl font-semibold mb-3">موثوق</h3>
+              <p className="text-muted-foreground">
                 أشخاص موثوقون مع عدد دلائل تعاملهم
               </p>
             </div>
 
-            <div className="p-6 rounded-xl bg-card border border-border hover:border-blue-300 transition-colors">
-              <div className="w-12 h-12 rounded-lg bg-red-100 text-red-600 flex items-center justify-center mb-4">
-                <span className="text-xl">⚠</span>
+            <div className="p-8 rounded-xl bg-card border border-border hover:border-blue-300 transition-colors">
+              <div className="w-16 h-16 rounded-lg bg-red-100 text-red-600 flex items-center justify-center mb-6">
+                <span className="text-3xl">⚠</span>
               </div>
-              <h3 className="font-semibold mb-2">نصاب</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-xl font-semibold mb-3">نصاب</h3>
+              <p className="text-muted-foreground">
                 تحذيرات من أشخاص نصابين
               </p>
             </div>
 
-            <div className="p-6 rounded-xl bg-card border border-border hover:border-blue-300 transition-colors">
-              <div className="w-12 h-12 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center mb-4">
-                <span className="text-xl">?</span>
+            <div className="p-8 rounded-xl bg-card border border-border hover:border-blue-300 transition-colors">
+              <div className="w-16 h-16 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center mb-6">
+                <span className="text-3xl">?</span>
               </div>
-              <h3 className="font-semibold mb-2">غير معروف</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-xl font-semibold mb-3">غير معروف</h3>
+              <p className="text-muted-foreground">
                 أشخاص غير موجودين في قوائمنا
               </p>
             </div>
@@ -143,29 +154,90 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h4 className="font-semibold mb-4">الروابط الرئيسية</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/">
+                    <a className="hover:text-foreground transition-colors">الرئيسية</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/verified-list">
+                    <a className="hover:text-foreground transition-colors">الموثوقون</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/scammers-list">
+                    <a className="hover:text-foreground transition-colors">المحتالون</a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">المعلومات</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/statistics">
+                    <a className="hover:text-foreground transition-colors">الإحصائيات</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about">
+                    <a className="hover:text-foreground transition-colors">حول المنصة</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq">
+                    <a className="hover:text-foreground transition-colors">الأسئلة الشائعة</a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">الإجراءات</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/report-scammer">
+                    <a className="hover:text-foreground transition-colors">إبلاغ عن محتال</a>
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setShowApplyModal(true)}
+                    className="hover:text-foreground transition-colors"
+                  >
+                    طلب الانضمام
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">الإدارة</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link href="/admin">
+                    <a className="hover:text-foreground transition-colors">لوحة التحكم</a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground text-center md:text-left">
               © 2026 منصة التحقق من الموثوقين. جميع الحقوق محفوظة
             </p>
-            <div className="flex items-center gap-3 flex-wrap justify-center">
-              <a href="/statistics" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                الإحصائيات
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                سياسة الخصوصية
               </a>
-              <span className="text-gray-300">•</span>
-              <a href="/report" className="text-sm text-red-600 hover:text-red-700 font-medium">
-                إبلاغ عن محتال
+              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                شروط الاستخدام
               </a>
-              <span className="text-gray-300">•</span>
-              <Button
-                onClick={() => setShowApplyModal(true)}
-                variant="ghost"
-                size="sm"
-                className="text-blue-600 hover:text-blue-700 h-auto p-0 font-medium"
-              >
-                تقديم طلب
-              </Button>
             </div>
           </div>
         </div>
