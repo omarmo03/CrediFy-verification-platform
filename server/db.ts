@@ -1,6 +1,6 @@
-import { eq, ilike, or, and } from "drizzle-orm";
+import { eq, or, ilike } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, profiles, InsertProfile, Profile, joinRequests, InsertJoinRequest, JoinRequest } from "../drizzle/schema";
+import { InsertUser, users, profiles, InsertProfile, Profile, joinRequests, InsertJoinRequest, JoinRequest, reports, InsertReport, Report, reportEvidence, InsertReportEvidence, ReportEvidence } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -248,6 +248,140 @@ export async function getJoinRequests(status?: string): Promise<JoinRequest[]> {
     return await db.select().from(joinRequests).orderBy(joinRequests.createdAt);
   } catch (error) {
     console.error("[Database] Failed to get join requests:", error);
+    return [];
+  }
+}
+
+// Report queries
+
+export async function createReport(data: InsertReport): Promise<Report | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create report: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(reports).values(data);
+    const result = await db
+      .select()
+      .from(reports)
+      .orderBy(reports.createdAt)
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create report:", error);
+    return null;
+  }
+}
+
+export async function getReports(status?: string): Promise<Report[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get reports: database not available");
+    return [];
+  }
+
+  try {
+    if (status) {
+      return await db
+        .select()
+        .from(reports)
+        .where(eq(reports.status, status as any))
+        .orderBy(reports.createdAt);
+    }
+    return await db.select().from(reports).orderBy(reports.createdAt);
+  } catch (error) {
+    console.error("[Database] Failed to get reports:", error);
+    return [];
+  }
+}
+
+export async function updateReportStatus(id: number, status: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update report: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(reports).set({ status: status as any }).where(eq(reports.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update report:", error);
+    return false;
+  }
+}
+
+export async function addReportEvidence(data: InsertReportEvidence): Promise<ReportEvidence | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot add evidence: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(reportEvidence).values(data);
+    const result = await db
+      .select()
+      .from(reportEvidence)
+      .orderBy(reportEvidence.createdAt)
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to add evidence:", error);
+    return null;
+  }
+}
+
+export async function getReportEvidence(reportId: number): Promise<ReportEvidence[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get evidence: database not available");
+    return [];
+  }
+
+  try {
+    return await db
+      .select()
+      .from(reportEvidence)
+      .where(eq(reportEvidence.reportId, reportId))
+      .orderBy(reportEvidence.createdAt);
+  } catch (error) {
+    console.error("[Database] Failed to get evidence:", error);
+    return [];
+  }
+}
+
+export async function updateProfileRank(id: number, rank: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update profile: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(profiles).set({ rank: rank as any }).where(eq(profiles.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update profile rank:", error);
+    return false;
+  }
+}
+
+export async function smartSearch(query: string): Promise<Profile[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot search: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(profiles);
+  } catch (error) {
+    console.error("[Database] Failed to search:", error);
     return [];
   }
 }

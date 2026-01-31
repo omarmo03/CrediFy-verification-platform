@@ -15,6 +15,13 @@
       "when": 1769788831853,
       "tag": "0001_bitter_bloodscream",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1769869971533,
+      "tag": "0002_thick_maddog",
+      "breakpoints": true
     }
   ]
 }

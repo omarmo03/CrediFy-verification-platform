@@ -149,13 +149,24 @@ export default function Home() {
             <p className="text-sm text-muted-foreground text-center md:text-left">
               © 2026 منصة التحقق من الموثوقين. جميع الحقوق محفوظة
             </p>
-            <Button
-              onClick={() => setShowApplyModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              تقديم طلب انضمام
-            </Button>
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              <a href="/statistics" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                الإحصائيات
+              </a>
+              <span className="text-gray-300">•</span>
+              <a href="/report" className="text-sm text-red-600 hover:text-red-700 font-medium">
+                إبلاغ عن محتال
+              </a>
+              <span className="text-gray-300">•</span>
+              <Button
+                onClick={() => setShowApplyModal(true)}
+                variant="ghost"
+                size="sm"
+                className="text-blue-600 hover:text-blue-700 h-auto p-0 font-medium"
+              >
+                تقديم طلب
+              </Button>
+            </div>
           </div>
         </div>
       </footer>

@@ -12,6 +12,10 @@ import {
   deleteProfile,
   createJoinRequest,
   getJoinRequests,
+  createReport,
+  getReports,
+  updateReportStatus,
+  smartSearch,
 } from "./db";
 import { TRPCError } from "@trpc/server";
 
@@ -52,6 +56,7 @@ export const appRouter = router({
           name: z.string().min(1),
           profileLink: z.string().url(),
           status: z.enum(["trusted", "scammer", "not_found"]),
+          rank: z.enum(["verified", "top_seller", "middleman"]).optional(),
           proofCount: z.number().int().min(0).default(0),
         })
       )
@@ -130,6 +135,47 @@ export const appRouter = router({
       }
       return await getJoinRequests();
     }),
+  }),
+
+  // Reports routers
+  reports: router({
+    create: publicProcedure
+      .input(
+        z.object({
+          reporterEmail: z.string().email(),
+          reporterName: z.string().min(1),
+          scammerName: z.string().min(1),
+          scammerLink: z.string().url(),
+          description: z.string().min(10),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const result = await createReport(input);
+        if (!result) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create report" });
+        }
+        return result;
+      }),
+
+    getAll: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Only admins can view reports" });
+      }
+      return await getReports();
+    }),
+
+    updateStatus: protectedProcedure
+      .input(z.object({ id: z.number(), status: z.string() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Only admins can update reports" });
+        }
+        const success = await updateReportStatus(input.id, input.status);
+        if (!success) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to update report" });
+        }
+        return { success: true };
+      }),
   }),
 });
 

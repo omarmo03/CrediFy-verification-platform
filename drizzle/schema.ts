@@ -38,7 +38,9 @@ export const profiles = mysqlTable(
     name: varchar("name", { length: 255 }).notNull(),
     profileLink: varchar("profileLink", { length: 500 }).notNull().unique(),
     status: mysqlEnum("status", ["trusted", "scammer", "not_found"]).notNull(),
+    rank: mysqlEnum("rank", ["verified", "top_seller", "middleman"]).default("verified"),
     proofCount: int("proofCount").default(0).notNull(),
+    description: text("description"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
@@ -46,6 +48,7 @@ export const profiles = mysqlTable(
     index("idx_name").on(table.name),
     index("idx_profileLink").on(table.profileLink),
     index("idx_status").on(table.status),
+    index("idx_rank").on(table.rank),
   ])
 );
 
@@ -75,3 +78,51 @@ export const joinRequests = mysqlTable(
 
 export type JoinRequest = typeof joinRequests.$inferSelect;
 export type InsertJoinRequest = typeof joinRequests.$inferInsert;
+
+/**
+ * Reports table for storing fraud reports
+ */
+export const reports = mysqlTable(
+  "reports",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    reporterEmail: varchar("reporterEmail", { length: 320 }).notNull(),
+    reporterName: varchar("reporterName", { length: 255 }).notNull(),
+    scammerName: varchar("scammerName", { length: 255 }).notNull(),
+    scammerLink: varchar("scammerLink", { length: 500 }).notNull(),
+    description: text("description").notNull(),
+    evidence: text("evidence"),
+    status: mysqlEnum("status", ["pending", "verified", "rejected"]).default("pending").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => ([
+    index("idx_scammerLink").on(table.scammerLink),
+    index("idx_status").on(table.status),
+    index("idx_createdAt").on(table.createdAt),
+  ])
+);
+
+export type Report = typeof reports.$inferSelect;
+export type InsertReport = typeof reports.$inferInsert;
+
+/**
+ * ReportEvidence table for storing uploaded evidence files
+ */
+export const reportEvidence = mysqlTable(
+  "reportEvidence",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    reportId: int("reportId").notNull(),
+    fileUrl: text("fileUrl").notNull(),
+    fileType: varchar("fileType", { length: 50 }).notNull(),
+    fileName: varchar("fileName", { length: 255 }).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ([
+    index("idx_reportId").on(table.reportId),
+  ])
+);
+
+export type ReportEvidence = typeof reportEvidence.$inferSelect;
+export type InsertReportEvidence = typeof reportEvidence.$inferInsert;
