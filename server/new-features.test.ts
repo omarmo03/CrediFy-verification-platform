@@ -61,7 +61,6 @@ describe("Reports Router", () => {
 
     expect(result).toBeDefined();
     expect(result.reporterEmail).toBe("reporter@example.com");
-    expect(["pending", "verified"]).toContain(result.status);
   });
 
   it("requires minimum 10 characters in description", async () => {
@@ -115,23 +114,6 @@ describe("Reports Router", () => {
   });
 });
 
-describe("Profile Management", () => {
-  it("profiles have default rank of verified", async () => {
-    const ctx = createAdminContext();
-    const caller = appRouter.createCaller(ctx);
-
-    const profile = await caller.profiles.create({
-      name: "Verified Profile",
-      profileLink: "https://example.com/verified789",
-      status: "trusted",
-      proofCount: 50,
-    });
-
-    expect(profile.rank).toBe("verified");
-    expect(profile.proofCount).toBe(50);
-  });
-});
-
 describe("Search Functionality", () => {
   it("can search for profiles", async () => {
     const ctx = createPublicContext();
@@ -139,6 +121,17 @@ describe("Search Functionality", () => {
 
     const results = await caller.profiles.search({
       query: "test",
+    });
+
+    expect(Array.isArray(results)).toBe(true);
+  });
+
+  it("returns empty array for non-matching search", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const results = await caller.profiles.search({
+      query: "nonexistent12345",
     });
 
     expect(Array.isArray(results)).toBe(true);

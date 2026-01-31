@@ -8,15 +8,23 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import ReportScammer from "./pages/ReportScammer";
 import Statistics from "./pages/Statistics";
+import VerifiedList from "./pages/VerifiedList";
+import ScammersList from "./pages/ScammersList";
+import FAQ from "./pages/FAQ";
+import About from "./pages/About";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"\\"} component={Home} />
+      <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/report"} component={ReportScammer} />
       <Route path={"/statistics"} component={Statistics} />
+      <Route path={"/verified"} component={VerifiedList} />
+      <Route path={"/scammers"} component={ScammersList} />
+      <Route path={"/faq"} component={FAQ} />
+      <Route path={"/about"} component={About} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
