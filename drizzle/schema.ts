@@ -37,9 +37,10 @@ export const profiles = mysqlTable(
     id: int("id").autoincrement().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
     profileLink: varchar("profileLink", { length: 500 }).notNull().unique(),
-    status: mysqlEnum("status", ["trusted", "scammer", "not_found"]).notNull(),
+    status: mysqlEnum("status", ["trusted", "scammer", "not_found", "suspicious"]).notNull(),
     rank: mysqlEnum("rank", ["verified", "top_seller", "middleman"]).default("verified"),
     proofCount: int("proofCount").default(0).notNull(),
+    phone: varchar("phone", { length: 20 }),
     description: text("description"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -126,3 +127,48 @@ export const reportEvidence = mysqlTable(
 
 export type ReportEvidence = typeof reportEvidence.$inferSelect;
 export type InsertReportEvidence = typeof reportEvidence.$inferInsert;
+
+/**
+ * Appeals table for storing appeals from scammers
+ */
+export const appeals = mysqlTable(
+  "appeals",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    profileId: int("profileId").notNull(),
+    email: varchar("email", { length: 320 }).notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    message: text("message").notNull(),
+    status: mysqlEnum("status", ["pending", "approved", "rejected"]).default("pending").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => ([
+    index("idx_profileId").on(table.profileId),
+    index("idx_status").on(table.status),
+  ])
+);
+
+export type Appeal = typeof appeals.$inferSelect;
+export type InsertAppeal = typeof appeals.$inferInsert;
+
+/**
+ * SiteSettings table for dynamic site configuration
+ */
+export const siteSettings = mysqlTable(
+  "siteSettings",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    key: varchar("key", { length: 255 }).notNull().unique(),
+    value: text("value").notNull(),
+    type: mysqlEnum("type", ["string", "number", "boolean", "json"]).default("string").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => ([
+    index("idx_key").on(table.key),
+  ])
+);
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type InsertSiteSetting = typeof siteSettings.$inferInsert;

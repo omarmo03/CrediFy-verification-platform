@@ -33,10 +33,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (searchProfiles.data && searchProfiles.data.length > 0) {
-      setSelectedProfile(searchProfiles.data[0]);
-    } else if (hasSearched && searchProfiles.data?.length === 0) {
-      setSelectedProfile(null);
+    if (searchProfiles.data) {
+      if (searchProfiles.data.exact) {
+        setSelectedProfile(searchProfiles.data.exact);
+      } else if (searchProfiles.data.suggestions && searchProfiles.data.suggestions.length > 0) {
+        setSelectedProfile(searchProfiles.data.suggestions[0]);
+      } else if (hasSearched) {
+        setSelectedProfile(null);
+      }
     }
   }, [searchProfiles.data, hasSearched]);
 
@@ -108,8 +112,9 @@ export default function Home() {
             <SearchResultCard
               profile={selectedProfile}
               isLoading={searchProfiles.isLoading}
+              suggestions={searchProfiles.data?.suggestions || []}
               error={
-                !searchProfiles.isLoading && !selectedProfile
+                !searchProfiles.isLoading && !selectedProfile && !searchProfiles.data?.suggestions?.length
                   ? "غير معروف"
                   : undefined
               }

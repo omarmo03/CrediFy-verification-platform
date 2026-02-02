@@ -15,8 +15,8 @@ import {
   createReport,
   getReports,
   updateReportStatus,
-  smartSearch,
 } from "./db";
+import { smartSearch, getStatistics } from "./search";
 import { TRPCError } from "@trpc/server";
 
 export const appRouter = router({
@@ -37,7 +37,7 @@ export const appRouter = router({
     search: publicProcedure
       .input(z.object({ query: z.string().min(1) }))
       .query(async ({ input }) => {
-        return await searchProfiles(input.query);
+        return await smartSearch(input.query);
       }),
 
     getAll: publicProcedure.query(async () => {
@@ -134,6 +134,13 @@ export const appRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "Only admins can view join requests" });
       }
       return await getJoinRequests();
+    }),
+  }),
+
+  // Statistics router
+  statistics: router({
+    get: publicProcedure.query(async () => {
+      return await getStatistics();
     }),
   }),
 
