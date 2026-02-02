@@ -1,39 +1,62 @@
-import { CheckCircle2, Star, Users } from "lucide-react";
+import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface BadgeProps {
-  rank?: "verified" | "top_seller" | "middleman";
-  size?: "sm" | "md" | "lg";
+  rank?: string;
+  status?: string;
+  proofCount?: number;
+  language?: 'ar' | 'en';
 }
 
-export function Badge({ rank = "verified", size = "md" }: BadgeProps) {
-  const sizeClasses = {
-    sm: "w-5 h-5",
-    md: "w-6 h-6",
-    lg: "w-8 h-8",
-  };
+export function Badge({ rank = 'verified', status = 'trusted', proofCount = 0, language = 'ar' }: BadgeProps) {
+  // Strict badge logic - based on rank only
+  if (rank === 'middleman') {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900 text-white text-sm font-semibold">
+        <CheckCircle2 className="w-4 h-4 text-blue-400" />
+        <span>{language === 'ar' ? 'وسيط معتمد' : 'Verified Middleman'}</span>
+      </div>
+    );
+  }
 
-  const colorClasses = {
-    verified: "text-green-600",
-    top_seller: "text-yellow-500",
-    middleman: "text-blue-700",
-  };
+  if (rank === 'top_seller') {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500 text-white text-sm font-semibold">
+        <CheckCircle2 className="w-4 h-4 text-yellow-300" />
+        <span>{language === 'ar' ? 'بائع مميز' : 'Top Seller'}</span>
+      </div>
+    );
+  }
 
-  const labels = {
-    verified: "موثوق",
-    top_seller: "بائع مميز",
-    middleman: "وسيط معتمد",
-  };
+  if (rank === 'verified') {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
+        <span>✓ {language === 'ar' ? 'مضمون' : 'Verified'}</span>
+      </div>
+    );
+  }
 
-  const icons = {
-    verified: <CheckCircle2 className={`${sizeClasses[size]} ${colorClasses[rank]}`} />,
-    top_seller: <Star className={`${sizeClasses[size]} ${colorClasses[rank]}`} fill="currentColor" />,
-    middleman: <Users className={`${sizeClasses[size]} ${colorClasses[rank]}`} />,
-  };
-
+  // Default for unknown rank
   return (
-    <div className="flex items-center gap-1">
-      {icons[rank]}
-      <span className="text-xs font-medium text-gray-600">{labels[rank]}</span>
+    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm font-semibold">
+      <span>{language === 'ar' ? 'غير معروف' : 'Unknown'}</span>
+    </div>
+  );
+}
+
+export function SuspiciousBadge({ language = 'ar' }: { language?: 'ar' | 'en' }) {
+  return (
+    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm font-semibold">
+      <AlertCircle className="w-4 h-4 text-yellow-600" />
+      <span>{language === 'ar' ? 'مشبوه - قيد المراجعة' : 'Suspicious - Under Review'}</span>
+    </div>
+  );
+}
+
+export function ScammerBadge({ language = 'ar' }: { language?: 'ar' | 'en' }) {
+  return (
+    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-semibold">
+      <AlertCircle className="w-4 h-4 text-red-600" />
+      <span>{language === 'ar' ? '⚠️ نصاب مؤكد' : '⚠️ Confirmed Scammer'}</span>
     </div>
   );
 }
