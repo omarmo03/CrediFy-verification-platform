@@ -385,3 +385,133 @@ export async function smartSearch(query: string): Promise<Profile[]> {
     return [];
   }
 }
+
+
+// Site Settings queries
+import { siteSettings, SiteSetting, InsertSiteSetting, appeals, Appeal, InsertAppeal } from "../drizzle/schema";
+
+export async function getSiteSetting(key: string): Promise<string | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get setting: database not available");
+    return null;
+  }
+
+  try {
+    const result = await db
+      .select()
+      .from(siteSettings)
+      .where(eq(siteSettings.key, key))
+      .limit(1);
+
+    return result.length > 0 ? result[0].value : null;
+  } catch (error) {
+    console.error("[Database] Failed to get setting:", error);
+    return null;
+  }
+}
+
+export async function getAllSiteSettings(): Promise<SiteSetting[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get settings: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(siteSettings);
+  } catch (error) {
+    console.error("[Database] Failed to get settings:", error);
+    return [];
+  }
+}
+
+export async function updateSiteSetting(key: string, value: string, type: string = "string"): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update setting: database not available");
+    return false;
+  }
+
+  try {
+    const existing = await db
+      .select()
+      .from(siteSettings)
+      .where(eq(siteSettings.key, key))
+      .limit(1);
+
+    if (existing.length > 0) {
+      await db
+        .update(siteSettings)
+        .set({ value, type: type as any, updatedAt: new Date() })
+        .where(eq(siteSettings.key, key));
+    } else {
+      await db.insert(siteSettings).values({ key, value, type: type as any });
+    }
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update setting:", error);
+    return false;
+  }
+}
+
+// Appeals queries
+export async function createAppeal(data: InsertAppeal): Promise<Appeal | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create appeal: database not available");
+    return null;
+  }
+
+  try {
+    await db.insert(appeals).values(data);
+    const result = await db
+      .select()
+      .from(appeals)
+      .orderBy(appeals.createdAt)
+      .limit(1);
+
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error("[Database] Failed to create appeal:", error);
+    return null;
+  }
+}
+
+export async function getAppeals(status?: string): Promise<Appeal[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get appeals: database not available");
+    return [];
+  }
+
+  try {
+    if (status) {
+      return await db
+        .select()
+        .from(appeals)
+        .where(eq(appeals.status, status as any))
+        .orderBy(appeals.createdAt);
+    }
+    return await db.select().from(appeals).orderBy(appeals.createdAt);
+  } catch (error) {
+    console.error("[Database] Failed to get appeals:", error);
+    return [];
+  }
+}
+
+export async function updateAppealStatus(id: number, status: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update appeal: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(appeals).set({ status: status as any }).where(eq(appeals.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update appeal:", error);
+    return false;
+  }
+}

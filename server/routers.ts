@@ -15,6 +15,12 @@ import {
   createReport,
   getReports,
   updateReportStatus,
+  getSiteSetting,
+  getAllSiteSettings,
+  updateSiteSetting,
+  createAppeal,
+  getAppeals,
+  updateAppealStatus,
 } from "./db";
 import { smartSearch, getStatistics } from "./search";
 import { TRPCError } from "@trpc/server";
@@ -180,6 +186,78 @@ export const appRouter = router({
         const success = await updateReportStatus(input.id, input.status);
         if (!success) {
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to update report" });
+        }
+        return { success: true };
+      }),
+  }),
+
+  // Settings router
+  settings: router({
+    getAll: publicProcedure.query(async () => {
+      return await getAllSiteSettings();
+    }),
+
+    get: publicProcedure
+      .input(z.object({ key: z.string() }))
+      .query(async ({ input }) => {
+        return await getSiteSetting(input.key);
+      }),
+
+    update: protectedProcedure
+      .input(
+        z.object({
+          key: z.string(),
+          value: z.string(),
+          type: z.enum(["string", "number", "boolean", "json"]).optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Only admins can update settings" });
+        }
+        const success = await updateSiteSetting(input.key, input.value, input.type);
+        if (!success) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to update setting" });
+        }
+        return { success: true };
+      }),
+  }),
+
+  // Appeals router
+  appeals: router({
+    create: publicProcedure
+      .input(
+        z.object({
+          profileId: z.number(),
+          email: z.string().email(),
+          name: z.string().min(1),
+          message: z.string().min(10),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const result = await createAppeal(input);
+        if (!result) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create appeal" });
+        }
+        return result;
+      }),
+
+    getAll: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Only admins can view appeals" });
+      }
+      return await getAppeals();
+    }),
+
+    updateStatus: protectedProcedure
+      .input(z.object({ id: z.number(), status: z.string() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Only admins can update appeals" });
+        }
+        const success = await updateAppealStatus(input.id, input.status);
+        if (!success) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to update appeal" });
         }
         return { success: true };
       }),
