@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Info, FileText } from "lucide-react";
+import { Search, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
@@ -65,12 +65,6 @@ export default function Home() {
               <Info className="w-4 h-4" />
               الشروط
             </Button>
-            <Link href="/admin">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <FileText className="w-4 h-4" />
-                لوحة التحكم
-              </Button>
-            </Link>
           </div>
         </div>
       </header>

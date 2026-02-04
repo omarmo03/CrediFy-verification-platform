@@ -20,8 +20,8 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/admin"} component={Admin} />
-      <Route path={"/admin-dashboard"} component={AdminDashboard} />
+      <Route path={"/admin-panel-secret"} component={Admin} />
+      <Route path={"/admin-dashboard-secret"} component={AdminDashboard} />
       <Route path={"/report"} component={ReportScammer} />
       <Route path={"/statistics"} component={Statistics} />
       <Route path={"/verified"} component={VerifiedList} />
