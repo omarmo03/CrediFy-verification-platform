@@ -187,7 +187,7 @@ export default function ComponentsShowcase() {
   const [dialogInput, setDialogInput] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // AI ChatBox demo state
+  // Chat demo state
   const [chatMessages, setChatMessages] = useState<Message[]>([
     { role: "system", content: "You are a helpful assistant." },
   ]);
@@ -214,7 +214,7 @@ export default function ComponentsShowcase() {
     const newMessages: Message[] = [...chatMessages, { role: "user", content }];
     setChatMessages(newMessages);
 
-    // Simulate AI response with delay
+    // Simulate response with delay
     setIsChatLoading(true);
     setTimeout(() => {
       const aiResponse: Message = {
@@ -1391,9 +1391,9 @@ export default function ComponentsShowcase() {
             </Card>
           </section>
 
-          {/* AI ChatBox Section */}
+          {/* Chat Box Section */}
           <section className="space-y-4">
-            <h3 className="text-2xl font-semibold">AI ChatBox</h3>
+            <h3 className="text-2xl font-semibold">Chat Box</h3>
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-4">

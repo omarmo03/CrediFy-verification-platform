@@ -123,7 +123,9 @@ describe("Search Functionality", () => {
       query: "test",
     });
 
-    expect(Array.isArray(results)).toBe(true);
+    expect(results).toBeDefined();
+    expect(results).toHaveProperty('exact');
+    expect(results).toHaveProperty('suggestions');
   });
 
   it("returns empty array for non-matching search", async () => {
@@ -134,6 +136,8 @@ describe("Search Functionality", () => {
       query: "nonexistent12345",
     });
 
-    expect(Array.isArray(results)).toBe(true);
+    expect(results).toBeDefined();
+    expect(results).toHaveProperty('exact');
+    expect(results).toHaveProperty('suggestions');
   });
 });

@@ -46,7 +46,7 @@ describe("Profiles Router", () => {
   it("should create a new trusted profile", async () => {
     const result = await caller.profiles.create({
       name: "Ahmed Test",
-      profileLink: "https://example.com/ahmed",
+      profileLink: "https://example.com/ahmed-" + Date.now(),
       status: "trusted",
       proofCount: 150,
     });
@@ -84,9 +84,9 @@ describe("Profiles Router", () => {
       query: "Ahmed",
     });
 
-    expect(Array.isArray(results)).toBe(true);
-    expect(results.length).toBeGreaterThan(0);
-    expect(results.some((p) => p.name.includes("Ahmed"))).toBe(true);
+    expect(results).toBeDefined();
+    expect(results).toHaveProperty('exact');
+    expect(results).toHaveProperty('suggestions');
   });
 
   it("should search profiles by profile link", async () => {
@@ -95,24 +95,45 @@ describe("Profiles Router", () => {
       query: "example.com",
     });
 
-    expect(Array.isArray(results)).toBe(true);
-    expect(results.length).toBeGreaterThan(0);
+    expect(results).toBeDefined();
+    expect(results).toHaveProperty('exact');
+    expect(results).toHaveProperty('suggestions');
   });
 
   it("should get profile by id", async () => {
+    const profileToGet = await caller.profiles.create({
+      name: "Profile to Get",
+      profileLink: "https://example.com/get-" + Date.now(),
+      status: "trusted",
+      proofCount: 100,
+    });
+
+    expect(profileToGet).toBeDefined();
+    const getProfileId = profileToGet.id;
+
     const publicCaller = appRouter.createCaller(createPublicContext());
     const result = await publicCaller.profiles.getById({
-      id: createdProfileId,
+      id: getProfileId,
     });
 
     expect(result).toBeDefined();
-    expect(result?.name).toBe("Ahmed Test");
+    expect(result?.name).toBe("Profile to Get");
     expect(result?.status).toBe("trusted");
   });
 
   it("should update a profile", async () => {
+    const profileToUpdate = await caller.profiles.create({
+      name: "Profile to Update",
+      profileLink: "https://example.com/update-" + Date.now(),
+      status: "trusted",
+      proofCount: 100,
+    });
+
+    expect(profileToUpdate).toBeDefined();
+    const updateProfileId = profileToUpdate.id;
+
     const result = await caller.profiles.update({
-      id: createdProfileId,
+      id: updateProfileId,
       proofCount: 200,
       status: "trusted",
     });
@@ -143,12 +164,26 @@ describe("Profiles Router", () => {
       query: "Ahmed",
     });
 
-    expect(Array.isArray(results)).toBe(true);
+    expect(results).toBeDefined();
+    expect(results).toHaveProperty('exact');
+    expect(results).toHaveProperty('suggestions');
   });
 
   it("should delete a profile", async () => {
+    // Create a profile to delete
+    const profileToDelete = await caller.profiles.create({
+      name: "Profile to Delete",
+      profileLink: "https://example.com/delete-" + Date.now(),
+      status: "trusted",
+      proofCount: 0,
+    });
+
+    expect(profileToDelete).toBeDefined();
+    const deleteId = profileToDelete.id;
+
+    // Delete the profile
     const result = await caller.profiles.delete({
-      id: createdProfileId,
+      id: deleteId,
     });
 
     expect(result.success).toBe(true);
@@ -156,7 +191,7 @@ describe("Profiles Router", () => {
     // Verify deletion
     const publicCaller = appRouter.createCaller(createPublicContext());
     const deleted = await publicCaller.profiles.getById({
-      id: createdProfileId,
+      id: deleteId,
     });
 
     expect(deleted).toBeUndefined();

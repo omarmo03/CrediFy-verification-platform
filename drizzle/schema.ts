@@ -3,7 +3,7 @@ import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, index } from "dri
 /**
  * Core user table backing auth flow.
  * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
+ * Columns use camelCase to match both database fields and type definitions.
  */
 export const users = mysqlTable("users", {
   /**
