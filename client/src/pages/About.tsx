@@ -37,7 +37,7 @@ export default function About() {
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container py-4">
-          <h1 className="text-3xl font-bold text-foreground">حول منصة RPS</h1>
+          <h1 className="text-3xl font-bold text-foreground">حول CrediFy</h1>
           <p className="text-sm text-muted-foreground mt-1">
             تعرف على رسالتنا وقيمنا
           </p>
@@ -52,7 +52,7 @@ export default function About() {
               منصة موثوقة للتحقق من الحسابات
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              منصة RPS هي قاعدة بيانات شاملة وموثوقة تساعد المستخدمين على التحقق من الحسابات والأشخاص.
+              CrediFy هي منصة موثوقة وشاملة للتحقق من موثوقية الحسابات والأشخاص.
               نحن نعمل على حماية المجتمع من الاحتيال والنصب من خلال توفير معلومات دقيقة ومحدثة.
             </p>
           </div>

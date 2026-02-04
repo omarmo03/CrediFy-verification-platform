@@ -51,9 +51,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">RPS</span>
+              <span className="text-white font-bold text-lg">CF</span>
             </div>
-            <h1 className="text-xl font-bold">منصة التحقق</h1>
+            <h1 className="text-xl font-bold">CrediFy</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
