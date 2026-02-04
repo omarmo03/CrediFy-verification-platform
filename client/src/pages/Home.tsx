@@ -160,19 +160,13 @@ export default function Home() {
               <h4 className="font-semibold mb-4">الروابط الرئيسية</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/">
-                    <a className="hover:text-foreground transition-colors">الرئيسية</a>
-                  </Link>
+                  <a href="/" className="hover:text-foreground transition-colors">الرئيسية</a>
                 </li>
                 <li>
-                  <Link href="/verified-list">
-                    <a className="hover:text-foreground transition-colors">الموثوقون</a>
-                  </Link>
+                  <a href="/verified-list" className="hover:text-foreground transition-colors">الموثوقون</a>
                 </li>
                 <li>
-                  <Link href="/scammers-list">
-                    <a className="hover:text-foreground transition-colors">المحتالون</a>
-                  </Link>
+                  <a href="/scammers-list" className="hover:text-foreground transition-colors">المحتالون</a>
                 </li>
               </ul>
             </div>
@@ -180,19 +174,13 @@ export default function Home() {
               <h4 className="font-semibold mb-4">المعلومات</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/statistics">
-                    <a className="hover:text-foreground transition-colors">الإحصائيات</a>
-                  </Link>
+                  <a href="/statistics" className="hover:text-foreground transition-colors">الإحصائيات</a>
                 </li>
                 <li>
-                  <Link href="/about">
-                    <a className="hover:text-foreground transition-colors">حول المنصة</a>
-                  </Link>
+                  <a href="/about" className="hover:text-foreground transition-colors">حول المنصة</a>
                 </li>
                 <li>
-                  <Link href="/faq">
-                    <a className="hover:text-foreground transition-colors">الأسئلة الشائعة</a>
-                  </Link>
+                  <a href="/faq" className="hover:text-foreground transition-colors">الأسئلة الشائعة</a>
                 </li>
               </ul>
             </div>
@@ -200,9 +188,7 @@ export default function Home() {
               <h4 className="font-semibold mb-4">الإجراءات</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/report-scammer">
-                    <a className="hover:text-foreground transition-colors">إبلاغ عن محتال</a>
-                  </Link>
+                  <a href="/report-scammer" className="hover:text-foreground transition-colors">إبلاغ عن محتال</a>
                 </li>
                 <li>
                   <button
@@ -218,9 +204,7 @@ export default function Home() {
               <h4 className="font-semibold mb-4">الإدارة</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/admin">
-                    <a className="hover:text-foreground transition-colors">لوحة التحكم</a>
-                  </Link>
+                  <a href="/admin-panel-secret" className="hover:text-foreground transition-colors">لوحة التحكم</a>
                 </li>
               </ul>
             </div>

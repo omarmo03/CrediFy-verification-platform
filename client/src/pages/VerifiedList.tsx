@@ -206,11 +206,11 @@ export default function VerifiedList() {
 
         {/* Back Button */}
         <div className="mt-12">
-          <Link href="/">
+          <a href="/">
             <Button variant="outline" className="gap-2">
               ← العودة للرئيسية
             </Button>
-          </Link>
+          </a>
         </div>
       </main>
     </div>
