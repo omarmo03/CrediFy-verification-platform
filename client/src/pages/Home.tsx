@@ -200,19 +200,12 @@ export default function Home() {
                 </li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">الإدارة</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <a href="/admin-panel-secret" className="hover:text-foreground transition-colors">لوحة التحكم</a>
-                </li>
-              </ul>
-            </div>
+
           </div>
 
           <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              © 2026 منصة التحقق من الموثوقين. جميع الحقوق محفوظة
+              © 2026 CrediFy. جميع الحقوق محفوظة
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
