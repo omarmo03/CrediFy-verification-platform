@@ -35,14 +35,32 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
-  // tRPC API
+
+  // 🔥🔥🔥 GOD MODE: ACTIVATED (وضع المدير الإجباري) 🔥🔥🔥
+  // التعديل ده هيخليك "أدمن" غصب عن الموقع عشان تعرف تدخل
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
-      createContext,
+      createContext: async (opts) => {
+        const ctx = await createContext(opts);
+        
+        // ⚠️ إجبار النظام على الاعتراف بيك كمدير
+        return {
+          ...ctx,
+          user: {
+            id: 1, // رقمك في الداتابيز
+            email: "omarmo201212@gmail.com",
+            role: "admin", // التاج الملكي 👑
+            name: "Omar Admin",
+            createdAt: new Date(),
+            googleId: "GOD_MODE_ENABLED"
+          }
+        };
+      },
     })
   );
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
