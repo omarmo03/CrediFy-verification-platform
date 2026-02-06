@@ -30,34 +30,21 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
 
-  // 🔥🔥🔥 GOD MODE: ACTIVATED (وضع المدير الإجباري) 🔥🔥🔥
-  // التعديل ده هيخليك "أدمن" غصب عن الموقع عشان تعرف تدخل
+  // tRPC API (Clean & Secure Mode) ✅
+  // رجعنا الكود الأصلي اللي بيتحقق من هوية المستخدم الحقيقية
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
-      createContext: async (opts) => {
-        const ctx = await createContext(opts);
-        
-        // ⚠️ إجبار النظام على الاعتراف بيك كمدير
-        return {
-          ...ctx,
-          user: {
-            id: 1, // رقمك في الداتابيز
-            email: "omarmo201212@gmail.com",
-            role: "admin", // التاج الملكي 👑
-            name: "Omar Admin",
-            createdAt: new Date(),
-            googleId: "GOD_MODE_ENABLED"
-          }
-        };
-      },
+      createContext,
     })
   );
 
