@@ -25,9 +25,9 @@ export async function setupVite(app: Express, server: Server) {
     const url = req.originalUrl;
 
     try {
+      // ✅ تعديل: استخدام process.cwd() عشان نتفادى خطأ __dirname
       const clientTemplate = path.resolve(
-        __dirname,
-        "../..",
+        process.cwd(),
         "client",
         "index.html"
       );
@@ -48,36 +48,34 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  // 1. تحديد المسار الرئيسي للمشروع (بيشتغل في أي بيئة)
+  // ✅ تعديل: البحث عن ملفات البناء بطريقة ذكية وآمنة
   const rootDir = process.cwd();
   
-  // 2. قائمة بكل الأماكن المحتملة لملفات الموقع (عشان ميتوهش)
+  // الاماكن المحتملة للملفات
   const possiblePaths = [
-    path.resolve(rootDir, "dist", "public"), // المسار القياسي لـ Replit/Render
-    path.resolve(rootDir, "dist"),           // أحيانا بيكون هنا
-    path.resolve(rootDir, "public"),         // أحيانا بيكون هنا
-    path.resolve(__dirname, "public"),       // المسار القديم
+    path.resolve(rootDir, "dist", "public"),
+    path.resolve(rootDir, "dist"),
+    path.resolve(rootDir, "public"),
   ];
 
   let distPath = "";
 
-  // 3. السيرفر هيدور فيهم واحد واحد لحد ما يلاقيه
+  // ندور فيهم
   for (const p of possiblePaths) {
+    // نتأكد ان فيه ملف index.html
     if (fs.existsSync(path.join(p, "index.html"))) {
       distPath = p;
-      console.log("✅ Found build files at:", distPath); // رسالة تأكيد في اللوج
+      console.log("✅ [Fixed] Found build files at:", distPath);
       break;
     }
   }
 
-  // 4. لو ملقاش حاجة خالص (دي المصيبة)
+  // لو ملقيناش، نستخدم المسار الافتراضي وخلاص
   if (!distPath) {
-    console.error("❌ CRITICAL: Could not find index.html in any of these paths:", possiblePaths);
-    // هنفترض الافتراضي عشان الموقع ميقعش
+    console.error("⚠️ Warning: Could not find build files. Defaulting to dist/public");
     distPath = path.resolve(rootDir, "dist", "public");
   }
 
-  // 5. تشغيل الملفات
   app.use(express.static(distPath));
 
   app.use("*", (_req, res) => {
@@ -85,7 +83,11 @@ export function serveStatic(app: Express) {
     if (fs.existsSync(indexPath)) {
        res.sendFile(indexPath);
     } else {
-       res.status(500).send("Server Error: Build files not found. Check logs.");
+       res.status(500).send(`
+         <h1>Deployment Error</h1>
+         <p>Could not find index.html in: ${distPath}</p>
+         <p>Current Directory: ${rootDir}</p>
+       `);
     }
   });
 }
