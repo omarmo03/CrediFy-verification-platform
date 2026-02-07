@@ -26,7 +26,7 @@ export async function setupVite(app: Express, server: Server) {
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        __dirname,
         "../..",
         "client",
         "index.html"
@@ -48,25 +48,44 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  // 👇 التعديل السحري هنا
-  // بنقوله دور في الفولدر الرئيسي (cwd) وبعدين ادخل dist وبعدين public
-  const distPath = path.resolve(process.cwd(), "dist", "public");
+  // 1. تحديد المسار الرئيسي للمشروع (بيشتغل في أي بيئة)
+  const rootDir = process.cwd();
+  
+  // 2. قائمة بكل الأماكن المحتملة لملفات الموقع (عشان ميتوهش)
+  const possiblePaths = [
+    path.resolve(rootDir, "dist", "public"), // المسار القياسي لـ Replit/Render
+    path.resolve(rootDir, "dist"),           // أحيانا بيكون هنا
+    path.resolve(rootDir, "public"),         // أحيانا بيكون هنا
+    path.resolve(__dirname, "public"),       // المسار القديم
+  ];
 
-  if (!fs.existsSync(distPath)) {
-    console.error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
-    );
+  let distPath = "";
+
+  // 3. السيرفر هيدور فيهم واحد واحد لحد ما يلاقيه
+  for (const p of possiblePaths) {
+    if (fs.existsSync(path.join(p, "index.html"))) {
+      distPath = p;
+      console.log("✅ Found build files at:", distPath); // رسالة تأكيد في اللوج
+      break;
+    }
   }
 
+  // 4. لو ملقاش حاجة خالص (دي المصيبة)
+  if (!distPath) {
+    console.error("❌ CRITICAL: Could not find index.html in any of these paths:", possiblePaths);
+    // هنفترض الافتراضي عشان الموقع ميقعش
+    distPath = path.resolve(rootDir, "dist", "public");
+  }
+
+  // 5. تشغيل الملفات
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
     const indexPath = path.resolve(distPath, "index.html");
     if (fs.existsSync(indexPath)) {
        res.sendFile(indexPath);
     } else {
-       res.status(404).send("Index file not found");
+       res.status(500).send("Server Error: Build files not found. Check logs.");
     }
   });
 }
