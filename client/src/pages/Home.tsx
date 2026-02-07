@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Search, Info } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { SearchResultCard } from "@/components/SearchResultCard";
 import { TermsModal } from "@/components/TermsModal";
 import { ApplyModal } from "@/components/ApplyModal";
+import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
 import { Link } from "wouter";
 
@@ -46,28 +47,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">CF</span>
-            </div>
-            <h1 className="text-xl font-bold">CrediFy</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowTermsModal(true)}
-              className="gap-2"
-            >
-              <Info className="w-4 h-4" />
-              الشروط
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Navbar */}
+      <Navbar
+        onTermsClick={() => setShowTermsModal(true)}
+        onApplyClick={() => setShowApplyModal(true)}
+      />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 md:py-20">
