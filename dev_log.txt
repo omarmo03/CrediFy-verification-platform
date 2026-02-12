@@ -1,0 +1,16 @@
+
+> rps-verification-platform@1.0.0 dev /home/ubuntu/CrediFy
+> NODE_ENV=development tsx watch server/_core/index.ts
+
+Server running on http://localhost:3000/
+(!) %VITE_ANALYTICS_ENDPOINT% is not defined in env variables found in /.. Is the variable mistyped?
+(!) %VITE_ANALYTICS_WEBSITE_ID% is not defined in env variables found in /.. Is the variable mistyped?
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+(!) %VITE_ANALYTICS_ENDPOINT% is not defined in env variables found in /favicon.ico. Is the variable mistyped?
+(!) %VITE_ANALYTICS_WEBSITE_ID% is not defined in env variables found in /favicon.ico. Is the variable mistyped?
+(!) %VITE_ANALYTICS_ENDPOINT% is not defined in env variables found in /favicon.ico. Is the variable mistyped?
+(!) %VITE_ANALYTICS_WEBSITE_ID% is not defined in env variables found in /favicon.ico. Is the variable mistyped?
+[Database] Cannot get profiles: database not available
+5:08:30 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+5:08:42 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+5:08:50 AM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css

@@ -147,10 +147,10 @@ export default function Home() {
                   <a href="/" className="hover:text-foreground transition-colors">الرئيسية</a>
                 </li>
                 <li>
-                  <a href="/verified-list" className="hover:text-foreground transition-colors">الموثوقون</a>
+                  <a href="/verified" className="hover:text-foreground transition-colors">الموثوقون</a>
                 </li>
                 <li>
-                  <a href="/scammers-list" className="hover:text-foreground transition-colors">المحتالون</a>
+                  <a href="/scammers" className="hover:text-foreground transition-colors">المحتالون</a>
                 </li>
               </ul>
             </div>
@@ -172,7 +172,7 @@ export default function Home() {
               <h4 className="font-semibold mb-4">الإجراءات</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <a href="/report-scammer" className="hover:text-foreground transition-colors">إبلاغ عن محتال</a>
+                  <a href="/report" className="hover:text-foreground transition-colors">إبلاغ عن محتال</a>
                 </li>
                 <li>
                   <button
