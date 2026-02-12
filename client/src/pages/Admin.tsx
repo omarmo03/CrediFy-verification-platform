@@ -282,11 +282,11 @@ export default function Admin() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="profileLink">رابط الحساب *</Label>
+              <Label htmlFor="profileLink">رابط الحساب أو المعرف *</Label>
               <Input
                 id="profileLink"
-                type="url"
-                placeholder="https://example.com/profile"
+                type="text"
+                placeholder="أدخل الرابط أو المعرف هنا"
                 value={formData.profileLink}
                 onChange={(e) => setFormData({ ...formData, profileLink: e.target.value })}
                 required

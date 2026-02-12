@@ -36,7 +36,7 @@ export const profiles = mysqlTable(
   {
     id: int("id").autoincrement().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
-    profileLink: varchar("profileLink", { length: 500 }).notNull().unique(),
+    profileLink: varchar("profileLink", { length: 500 }).notNull(),
     status: mysqlEnum("status", ["trusted", "scammer", "not_found", "suspicious"]).notNull(),
     rank: mysqlEnum("rank", ["verified", "top_seller", "middleman"]).default("verified"),
     proofCount: int("proofCount").default(0).notNull(),

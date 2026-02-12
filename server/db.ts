@@ -391,7 +391,16 @@ export async function smartSearch(query: string): Promise<Profile[]> {
   }
 
   try {
-    return await db.select().from(profiles);
+    if (!query) return [];
+    
+    const lowerQuery = query.toLowerCase();
+    const allProfiles = await db.select().from(profiles);
+    
+    return allProfiles.filter(p => 
+      p.name.toLowerCase().includes(lowerQuery) || 
+      p.profileLink.toLowerCase().includes(lowerQuery) ||
+      (p.phone && p.phone.includes(query))
+    );
   } catch (error) {
     console.error("[Database] Failed to search:", error);
     return [];

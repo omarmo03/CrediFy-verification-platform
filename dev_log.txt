@@ -14,3 +14,8 @@ Server running on http://localhost:3000/
 5:08:30 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
 5:08:42 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
 5:08:50 AM [vite] (client) hmr update /src/pages/Home.tsx, /src/index.css
+6:14:42 AM [vite] (client) hmr update /src/pages/Admin.tsx, /src/index.css
+6:14:46 AM [tsx] change in ./drizzle/schema.ts Restarting...
+cServer running on http://localhost:3000/
+6:14:52 AM [tsx] change in ./server/db.ts Restarting...
+cServer running on http://localhost:3000/
